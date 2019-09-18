@@ -1,19 +1,35 @@
 const express = require("express");
 const morgan = require("morgan");
-const app = express();
 const dotenv = require("dotenv");
+const mongoose = require("mongoose");
+const bodyPaarser = require("body-parser");
+dotenv.config();
+const app = express();
 
-// ! dotenv configutration
+// * mongoose database connection
+
+mongoose
+  .connect(process.env.MONGO_DB)
+  .then(() => {
+    console.log("Mongodb Connected");
+  })
+  .catch(err => {
+    console.log(err);
+  });
+
+// * dotenv configutration
 
 dotenv.config();
 
-// ! external middle wares
-app.use(morgan("dev"));
+// * external middleware
 
-//  ! Imported Roter
+app.use(morgan("dev"));
+app.use(bodyPaarser());
+
+//  * Imported Roter
 const postRouter = require("./routes/post.js");
 
-// ! router middleware
+// !* router middleware
 app.use("/", postRouter);
 
 const PORT = process.env.PORT;
